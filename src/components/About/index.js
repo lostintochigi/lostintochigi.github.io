@@ -31,10 +31,10 @@ const About = () => {
             Hi there! I'm Animesh Harsh, a Computer Science junior based in Tokyo. <br/><br/>
             </p>
             <p className="intro-para2">
-            Originally from India, I embarked on my journey in Japan for my Undergraduate education back in 2019. <br/><br/>
+            Originally from India, I embarked on my journey to Japan for my Undergraduate education back in 2019. <br/><br/>
             </p>
             <p className="intro-para3">
-            My passion lies in Image Processing, App Development, Linux Server Management, Unity, Scripting, and I thrive on leveraging technology to simplify my life.
+            My interests lie in Image Processing, App Development, Linux Server Management, Unity and Bash Scripting. I thrive on leveraging technology to simplify my life.
             </p>
             <p className="intro-para3">
             Link to resume:- <br/>

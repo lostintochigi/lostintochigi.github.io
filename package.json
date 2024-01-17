@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^13.5.0",
     "animate.css": "^4.1.1",
     "emailjs": "^4.0.3",
+    "gsap": "file:gsap-bonus.tgz",
     "gsap-trial": "^3.12.4",
     "loaders.css": "^0.1.2",
     "react": "^18.2.0",
@@ -28,8 +29,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "predeploy": "npm run build",
-    "deploy" : "gh-pages -d build",
+    "predeploy": "gh-pages -d build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
