@@ -23,11 +23,9 @@
     "react-router-dom": "^6.21.1",
     "react-scripts": "^5.0.1",
     "sass": "^1.69.5",
-    "web-vitals": "^2.1.4",
-    "homepage": "http://iona-b.github.io/"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "predeploy": "npm run build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
