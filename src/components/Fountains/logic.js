@@ -1,6 +1,8 @@
 // Pure helpers for the HK Water Fountains page: Hong Kong time, opening
 // hours, filtering and distances. No React here so it's easy to test.
 
+import { directionsLinks as links, distanceKm, formatDistance } from '../MapKit/geo'
+
 const HK_TZ = 'Asia/Hong_Kong'
 const WEEKDAYS = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }
 
@@ -59,18 +61,7 @@ export function venueOpen(venue, now) {
     return unknown ? null : false
 }
 
-export function distanceKm(a, b) {
-    const R = 6371
-    const rad = (d) => (d * Math.PI) / 180
-    const dLat = rad(b.lat - a.lat)
-    const dLng = rad(b.lng - a.lng)
-    const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2
-    return 2 * R * Math.asin(Math.sqrt(h))
-}
-
-export function formatDistance(km) {
-    return km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(km < 10 ? 1 : 0)} km`
-}
+export { distanceKm, formatDistance }
 
 export const ACCESS_LABELS = {
     public: 'Public',
@@ -104,14 +95,9 @@ export function filterVenues(venues, f, now) {
     })
 }
 
-// Google Maps on Android/desktop, Apple Maps on iOS/macOS. Rows with
-// suspicious coordinates route to the address instead.
+// Rows with suspicious coordinates route to the address instead.
 export function directionsLinks(venue) {
-    const dest = venue.flagged
-        ? encodeURIComponent(`${venue.name}, ${venue.address}, Hong Kong`)
-        : `${venue.lat},${venue.lng}`
-    return {
-        google: `https://www.google.com/maps/dir/?api=1&destination=${dest}`,
-        apple: `https://maps.apple.com/?daddr=${dest}`,
-    }
+    return venue.flagged
+        ? links({ query: `${venue.name}, ${venue.address}, Hong Kong` })
+        : links({ lat: venue.lat, lng: venue.lng })
 }

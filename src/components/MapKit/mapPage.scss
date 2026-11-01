@@ -1,4 +1,4 @@
-// HK Water Fountains: mobile-first. Map above list on phones; list | map from 900px.
+// Shared layout for full-screen map utilities (fountains, Michelin). Mobile-first: map above list on phones; list | map from 900px.
 $bg: #052409;
 $panel: #0b3311;
 $line: #24502b;
@@ -7,7 +7,7 @@ $muted: #b9c9bb; // 8.9:1 on $bg
 $accent: #ffd700;
 $restricted: #b8c2cc;
 
-.fountains-page {
+.map-page {
     min-height: 100vh;
     background: $bg;
     color: $text;
@@ -94,7 +94,7 @@ $restricted: #b8c2cc;
 }
 
 @media (min-width: 900px) {
-    .fountains-page {
+    .map-page {
         height: 100vh;
         display: flex;
         flex-direction: column;
@@ -462,7 +462,7 @@ $restricted: #b8c2cc;
 
 @keyframes fp-pulse { 50% { opacity: 0.4; } }
 
-.fountain-marker {
+.map-marker {
     background: none;
     border: 0;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
@@ -470,7 +470,7 @@ $restricted: #b8c2cc;
     &:focus-visible { outline: 3px solid #1e88e5; border-radius: 50%; }
 }
 
-.fountain-cluster {
+.map-cluster {
     display: flex;
     align-items: center;
     justify-content: center;

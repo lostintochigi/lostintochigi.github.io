@@ -29,6 +29,14 @@ const utilities = [
         tags: ['hong kong', 'map', 'open data'],
         date: '2026-11',
     },
+    {
+        name: 'HK Michelin Map',
+        description:
+            "Every Hong Kong restaurant with MICHELIN stars or a Bib Gourmand in the 2026 guide, on one map. Filter by stars, cuisine and district, or find what's near you.",
+        url: '/utilities/hk-michelin',
+        tags: ['hong kong', 'map', 'food'],
+        date: '2026-11',
+    },
 ]
 
 export default utilities

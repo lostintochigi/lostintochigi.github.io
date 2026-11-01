@@ -20,6 +20,19 @@ To update the data:
    `data/fountain-overrides.json`, then re-run step 2.
 4. `npm run deploy`.
 
+### HK Michelin Map (`/utilities/hk-michelin`)
+
+Hong Kong restaurants with MICHELIN stars or a Bib Gourmand. The list lives in
+`data/michelin_hk_2026.csv`, compiled from published coverage of the guide announcement, with OpenStreetMap
+coordinates. `scripts/build-michelin.mjs` validates it, writes `public/data/michelin-hk.json` and publishes a
+copy of the CSV for download.
+
+- Fix a row: edit the CSV, or add an entry in `data/michelin-overrides.json` (e.g. `"exclude": true` if a
+  restaurant closes, or corrected `lat`/`lng`).
+- New guide edition: save a new CSV with the same columns as `data/michelin_hk_<year>.csv`, then
+  `npm run data:michelin -- --edition <year>` and update the route copy if needed.
+- Check `data/michelin-report.md`, then `npm run deploy`.
+
 ---
 
 # Getting Started with Create React App

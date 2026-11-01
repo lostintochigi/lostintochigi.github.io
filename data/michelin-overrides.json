@@ -1,0 +1,16 @@
+{
+  "_help": [
+    "Manual fixes applied by scripts/build-michelin.mjs. This file is never written by the script.",
+    "Match by restaurant name (case-insensitive). Any of lat, lng, address, district, distinction, cuisine",
+    "replace the CSV value. Setting lat/lng marks the position as manually verified (skips the district check).",
+    "\"exclude\": true drops the restaurant (e.g. it has closed). Re-run: npm run data:michelin"
+  ],
+  "overrides": [
+    {
+      "name": "Ju Xing Home",
+      "lat": 22.325485,
+      "lng": 114.16752,
+      "note": "Verified: 416-418 Portland Street is at Prince Edward MTR, inside Yau Tsim Mong. The district check flags it only because most Yau Tsim Mong entries are in Tsim Sha Tsui."
+    }
+  ]
+}

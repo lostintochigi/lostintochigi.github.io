@@ -1,0 +1,42 @@
+// Michelin-specific bits on top of MapKit/mapPage.scss.
+.michelin-page {
+    .mic-counts { white-space: nowrap; }
+
+    .mic-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        min-width: 30px;
+        height: 22px;
+        padding: 0 5px;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+
+        &.is-star { color: #fff; background: #b3122e; border-radius: 11px; }
+        &.is-bib { color: #1b1b1b; background: #ffd700; border-radius: 5px; }
+    }
+
+    .badge-star { color: #ffb3bf; }
+    .badge-bib { color: #ffd700; }
+    .badge-green { color: #8ef0a0; }
+
+    .fp-filters .count { color: #b9c9bb; font-size: 13px; }
+    .fp-filters .radio-group { flex-direction: column; }
+
+    .nearest-tag { font-size: 12px; color: #ffb3bf; font-weight: 600; &.is-bib { color: #ffd700; } }
+
+    .mic-facts {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 6px 10px;
+        margin: 10px 0 0;
+        font-size: 14px;
+
+        dt { color: #b9c9bb; }
+        dd { margin: 0; overflow-wrap: anywhere; }
+    }
+
+    .mic-search { margin: 14px 0 0; font-size: 14px; }
+}

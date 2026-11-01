@@ -1,10 +1,13 @@
 import 'leaflet/dist/leaflet.css'
-import './index.scss'
+import '../MapKit/mapPage.scss'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MapContainer, TileLayer, CircleMarker, useMap } from 'react-leaflet'
-import ClusterLayer from './ClusterLayer'
-import LocateControl from './LocateControl'
+import { MapContainer, TileLayer, CircleMarker } from 'react-leaflet'
+import ClusterLayer from '../MapKit/ClusterLayer'
+import LocateControl from '../MapKit/LocateControl'
+import FlyTo from '../MapKit/FlyTo'
+import { HK_BOUNDS, locateUser } from '../MapKit/geo'
+import { fountainIcon, fountainTitle } from './markers'
 import {
     ACCESS_LABELS,
     directionsLinks,
@@ -18,10 +21,6 @@ import {
     venueOpen,
 } from './logic'
 
-const HK_BOUNDS = [
-    [22.15, 113.82],
-    [22.57, 114.45],
-]
 const PAGE_SIZE = 40
 const NEAREST_COUNT = 10
 
@@ -34,14 +33,6 @@ function useHkClock() {
         return () => clearInterval(t)
     }, [])
     return now
-}
-
-function FlyTo({ target }) {
-    const map = useMap()
-    useEffect(() => {
-        if (target) map.flyTo([target.lat, target.lng], target.zoom || 15, { duration: 0.8 })
-    }, [target, map])
-    return null
 }
 
 // Turn bare URLs in LCSD's free-text notes into links.
@@ -265,38 +256,14 @@ export default function Fountains() {
         }
     }, [])
 
-    const locate = () => {
-        if (!('geolocation' in navigator)) {
-            setGeoStatus({ state: 'error', message: "Your browser doesn't support location. Search or pick a district instead." })
-            return
-        }
-        if (!window.isSecureContext) {
-            setGeoStatus({ state: 'error', message: 'Location only works over a secure (https://) connection.' })
-            return
-        }
-        setGeoStatus({ state: 'loading', message: 'Finding your location…' })
-        navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude }
-                const inHk = loc.lat > 22.1 && loc.lat < 22.6 && loc.lng > 113.8 && loc.lng < 114.5
-                setUserLoc(loc)
-                setFlyTarget({ ...loc, zoom: inHk ? 15 : 11, t: Date.now() })
-                setGeoStatus({
-                    state: 'ok',
-                    message: inHk ? '' : "You seem to be outside Hong Kong, so distances will be large.",
-                })
-            },
-            (err) => {
-                const messages = {
-                    1: 'Location permission was denied. You can still search or filter by district.',
-                    2: "Couldn't determine your location. Try again outdoors, or search instead.",
-                    3: 'Finding your location took too long. Please try again.',
-                }
-                setGeoStatus({ state: 'error', message: messages[err.code] || 'Location is unavailable.' })
-            },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
-        )
-    }
+    const locate = () =>
+        locateUser((status) => {
+            setGeoStatus({ state: status.state, message: status.message })
+            if (status.loc) {
+                setUserLoc(status.loc)
+                setFlyTarget({ ...status.loc, zoom: status.inHk ? 15 : 11, t: Date.now() })
+            }
+        })
 
     const selected = selectedId ? byId.get(selectedId) : null
     const fitKey = filters.district || filters.search.trim() ? `${filters.district}|${filters.search.trim().toLowerCase()}` : ''
@@ -308,7 +275,7 @@ export default function Fountains() {
         : ''
 
     return (
-        <div className="fountains-page">
+        <div className="map-page">
             <header className="fp-header">
                 <Link to="/utilities" className="back-link">
                     ← Utilities
@@ -487,7 +454,9 @@ export default function Fountains() {
                         />
                         {data && (
                             <ClusterLayer
-                                venues={venues}
+                                items={venues}
+                                iconFor={fountainIcon}
+                                titleFor={fountainTitle}
                                 visibleIds={stableVisibleIds}
                                 selectedId={selectedId}
                                 onSelect={select}
