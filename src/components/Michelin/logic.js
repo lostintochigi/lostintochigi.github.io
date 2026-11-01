@@ -1,4 +1,4 @@
-// Pure filtering helpers for the HK Michelin map.
+// Pure filtering helpers for the Michelin map pages.
 
 import { isOpenNow } from './hours'
 
@@ -27,7 +27,7 @@ export function filterRestaurants(list, f, now) {
         if (f.openNow && !isOpenNow(r.week, now)) return false
         if (f.cuisine && r.cuisine !== f.cuisine) return false
         if (f.district && r.district !== f.district) return false
-        if (q && !`${r.name} ${r.cuisine} ${r.district} ${r.address} ${r.description || ''}`.toLowerCase().includes(q)) return false
+        if (q && !`${r.name} ${r.cuisine} ${r.district} ${r.address} ${r.description || ''} ${r.nameJa || ''}`.toLowerCase().includes(q)) return false
         return true
     })
 }

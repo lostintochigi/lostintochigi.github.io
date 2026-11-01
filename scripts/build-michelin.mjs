@@ -2,7 +2,8 @@
 // Validates data/michelin_hk_2026.csv and writes public/data/michelin-hk.json
 // (+ a public copy of the CSV for download) and data/michelin-report.md.
 //
-// Usage: npm run data:michelin [-- --csv path --edition "2026"]
+// Usage: npm run data:michelin (Hong Kong) or npm run data:michelin-tokyo
+//        [-- --csv path --edition "MICHELIN Guide Tokyo 2027"]
 // Manual fixes: data/michelin-overrides.json (never written by this script).
 
 import fs from 'node:fs'
@@ -16,19 +17,41 @@ const args = Object.fromEntries(
         return acc
     }, [])
 )
-const EDITION = args.edition || '2026'
-const CSV_PATH = path.resolve(ROOT, args.csv || `data/michelin_hk_${EDITION}.csv`)
-const OVERRIDES_PATH = path.resolve(ROOT, 'data/michelin-overrides.json')
-const OUT_PATH = path.resolve(ROOT, 'public/data/michelin-hk.json')
-const PUBLIC_CSV = path.resolve(ROOT, `public/data/michelin_hk_${EDITION}.csv`)
-const REPORT_PATH = path.resolve(ROOT, 'data/michelin-report.md')
+const CITIES = {
+    hk: {
+        edition: 'MICHELIN Guide Hong Kong & Macau 2026',
+        csv: 'data/michelin_hk_2026.csv',
+        overrides: 'data/michelin-overrides.json',
+        out: 'public/data/michelin-hk.json',
+        report: 'data/michelin-report.md',
+        bounds: { minLat: 22.15, maxLat: 22.57, minLng: 113.82, maxLng: 114.45 },
+        districts: [
+            'Central & Western', 'Eastern', 'Islands', 'Kowloon City', 'Kwai Tsing', 'Kwun Tong', 'North', 'Sai Kung', 'Sha Tin',
+            'Sham Shui Po', 'Southern', 'Tai Po', 'Tsuen Wan', 'Tuen Mun', 'Wan Chai', 'Wong Tai Sin', 'Yau Tsim Mong', 'Yuen Long',
+        ],
+    },
+    tokyo: {
+        edition: 'MICHELIN Guide Tokyo 2026',
+        csv: 'data/michelin_tokyo.csv',
+        overrides: 'data/michelin-tokyo-overrides.json',
+        out: 'public/data/michelin-tokyo.json',
+        report: 'data/michelin-tokyo-report.md',
+        bounds: { minLat: 35.5, maxLat: 35.9, minLng: 138.9, maxLng: 139.95 },
+        districts: null, // wards and Tama cities; not validated against a fixed list
+    },
+}
+const CITY = CITIES[args.city || 'hk']
+if (!CITY) throw new Error(`Unknown --city "${args.city}" (use ${Object.keys(CITIES).join(', ')})`)
+const EDITION = args.edition || CITY.edition
+const CSV_PATH = path.resolve(ROOT, args.csv || CITY.csv)
+const OVERRIDES_PATH = path.resolve(ROOT, CITY.overrides)
+const OUT_PATH = path.resolve(ROOT, CITY.out)
+const PUBLIC_CSV = path.resolve(ROOT, 'public/data', path.basename(CSV_PATH))
+const REPORT_PATH = path.resolve(ROOT, CITY.report)
 
-const HK = { minLat: 22.15, maxLat: 22.57, minLng: 113.82, maxLng: 114.45 }
+const HK = CITY.bounds
 const DISTINCTIONS = ['3 Stars', '2 Stars', '1 Star', 'Bib Gourmand']
-const DISTRICTS = [
-    'Central & Western', 'Eastern', 'Islands', 'Kowloon City', 'Kwai Tsing', 'Kwun Tong', 'North', 'Sai Kung', 'Sha Tin',
-    'Sham Shui Po', 'Southern', 'Tai Po', 'Tsuen Wan', 'Tuen Mun', 'Wan Chai', 'Wong Tai Sin', 'Yau Tsim Mong', 'Yuen Long',
-]
+const DISTRICTS = CITY.districts
 const REQUIRED = ['name', 'distinction', 'cuisine', 'address', 'district']
 
 // RFC 4180 CSV parser (quoted fields, "" escapes, CRLF/LF).
@@ -135,7 +158,7 @@ function main() {
 
         const problems = REQUIRED.filter((k) => !r[k]).map((k) => `missing ${k}`)
         if (r.distinction && !DISTINCTIONS.includes(r.distinction)) problems.push(`unknown distinction "${r.distinction}"`)
-        if (r.district && !DISTRICTS.includes(r.district)) problems.push(`unknown district "${r.district}"`)
+        if (r.district && DISTRICTS && !DISTRICTS.includes(r.district)) problems.push(`unknown district "${r.district}"`)
         if (problems.length) { report.invalid.push({ r, note: problems.join('; ') }); return }
 
         const key = `${r.name.toLowerCase()}|${r.address.toLowerCase()}`
@@ -193,6 +216,7 @@ function main() {
         .map((r, i) => ({
             id: i + 1,
             name: r.name,
+            nameJa: r.name_ja || null,
             distinction: r.distinction,
             stars: r.distinction === 'Bib Gourmand' ? 0 : parseInt(r.distinction, 10),
             greenStar: /^(yes|true|y)$/i.test(r.green_star || ''),
@@ -213,9 +237,9 @@ function main() {
     const cuisines = [...new Set(restaurants.map((r) => r.cuisine))].sort((a, b) => a.localeCompare(b))
     const out = {
         source: {
-            edition: `MICHELIN Guide Hong Kong & Macau ${EDITION}`,
+            edition: EDITION,
             compiledFrom: 'published press coverage of the guide announcement',
-            csv: `/data/michelin_hk_${EDITION}.csv`,
+            csv: `/data/${path.basename(CSV_PATH)}`,
         },
         generated: new Date().toISOString(),
         counts: Object.fromEntries(DISTINCTIONS.map((d) => [d, restaurants.filter((r) => r.distinction === d).length])),
@@ -240,8 +264,8 @@ function main() {
         L.push('')
     }
     section('Invalid rows (not on map)', report.invalid)
-    section('No coordinates (not on map)', report.noCoords, 'Add lat/lng in the CSV or in data/michelin-overrides.json.')
-    section('Outside Hong Kong (not on map)', report.outOfBounds)
+    section('No coordinates (not on map)', report.noCoords, `Add lat/lng in the CSV or in ${path.relative(ROOT, OVERRIDES_PATH)}.`)
+    section('Outside the city bounds (not on map)', report.outOfBounds)
     section('Duplicates (skipped)', report.duplicates)
     section('Flagged: position looks wrong for the district', report.flagged, 'Shown with a warning; Directions use the address.')
     section('Opening hours that need fixing', report.badHours, 'Fix the hours column (format: "Mon-Fri 12:00-14:30, 18:00-22:30; Sun closed").')

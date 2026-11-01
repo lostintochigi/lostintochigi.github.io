@@ -7,11 +7,11 @@ import { MapContainer, TileLayer, CircleMarker } from 'react-leaflet'
 import ClusterLayer from '../MapKit/ClusterLayer'
 import LocateControl from '../MapKit/LocateControl'
 import FlyTo from '../MapKit/FlyTo'
-import { HK_BOUNDS, directionsLinks, distanceKm, formatDistance, locateUser } from '../MapKit/geo'
+import { directionsLinks, distanceKm, formatDistance, locateUser } from '../MapKit/geo'
 import { michelinIcon, michelinTitle } from './markers'
 import { DEFAULT_FILTERS, DISTINCTIONS, activeFilterCount, filterRestaurants } from './logic'
-import { openStatus, weekRows } from './hours'
-import { hkNow } from '../Fountains/logic'
+import { openStatus, weekRows, zonedNow } from './hours'
+import cities from './cities'
 
 const PAGE_SIZE = 40
 const NEAREST_COUNT = 10
@@ -27,7 +27,7 @@ function DistinctionBadge({ r }) {
     )
 }
 
-function OpeningHours({ r, now }) {
+function OpeningHours({ r, now, city }) {
     const status = openStatus(r.week, now)
     const rows = weekRows(r.week)
     return (
@@ -55,7 +55,7 @@ function OpeningHours({ r, now }) {
             {r.hoursNote && <p className="mic-muted">{r.hoursNote}</p>}
             {rows.length > 0 && (
                 <p className="mic-muted">
-                    Hong Kong time. Hours change, especially on public holidays, so confirm before you go
+                    {city.timeLong}. Hours change, especially on public holidays, so confirm before you go
                     {r.hoursSource && (
                         <>
                             {' '}
@@ -69,15 +69,15 @@ function OpeningHours({ r, now }) {
     )
 }
 
-function RestaurantDetail({ r, distance, now, onBack }) {
+function RestaurantDetail({ r, distance, now, city, onBack }) {
     const headingRef = useRef(null)
     useEffect(() => {
         headingRef.current?.focus()
     }, [r.id])
     const links = r.flagged
-        ? directionsLinks({ query: `${r.name}, ${r.address}, Hong Kong` })
+        ? directionsLinks({ query: `${r.name}, ${r.address}, ${city.place}` })
         : directionsLinks({ lat: r.lat, lng: r.lng })
-    const search = `https://www.google.com/search?q=${encodeURIComponent(`${r.name} Hong Kong`)}`
+    const search = `https://www.google.com/search?q=${encodeURIComponent(`${r.name} ${city.place}`)}`
     return (
         <section className="venue-detail" aria-labelledby="mic-detail-title">
             <button type="button" className="text-button" onClick={onBack}>
@@ -85,6 +85,12 @@ function RestaurantDetail({ r, distance, now, onBack }) {
             </button>
             <h2 id="mic-detail-title" tabIndex={-1} ref={headingRef}>
                 {r.name}
+                {r.nameJa && r.nameJa !== r.name && (
+                    <span className="mic-name-ja" lang="ja">
+                        {' '}
+                        {r.nameJa}
+                    </span>
+                )}
             </h2>
             <div className="badges">
                 <DistinctionBadge r={r} />
@@ -95,7 +101,7 @@ function RestaurantDetail({ r, distance, now, onBack }) {
                 <dd>{r.cuisine}</dd>
                 <dt>Address</dt>
                 <dd>{r.address}</dd>
-                <dt>District</dt>
+                <dt>{city.districtLabel}</dt>
                 <dd>{r.district}</dd>
                 {distance != null && (
                     <>
@@ -104,7 +110,7 @@ function RestaurantDetail({ r, distance, now, onBack }) {
                     </>
                 )}
             </dl>
-            <OpeningHours r={r} now={now} />
+            <OpeningHours r={r} now={now} city={city} />
             {(r.flagged || r.approximate) && (
                 <p className="warning" role="note">
                     ⚠ {r.flagged || 'The map position is approximate. Use the address to find the entrance.'}
@@ -161,7 +167,8 @@ function RestaurantRow({ r, distance, now, selected, onSelect }) {
     )
 }
 
-export default function Michelin() {
+export default function Michelin({ cityKey = 'hk' }) {
+    const city = cities[cityKey]
     const [data, setData] = useState(null)
     const [error, setError] = useState(null)
     const [filters, setFilters] = useState(DEFAULT_FILTERS)
@@ -173,16 +180,19 @@ export default function Michelin() {
     const [geoStatus, setGeoStatus] = useState({ state: 'idle', message: '' })
     const [flyTarget, setFlyTarget] = useState(null)
     const sideRef = useRef(null)
-    const [now, setNow] = useState(() => hkNow())
+    const [now, setNow] = useState(() => zonedNow(city.timeZone))
 
     useEffect(() => {
-        const t = setInterval(() => setNow(hkNow()), 60 * 1000)
+        const t = setInterval(() => setNow(zonedNow(city.timeZone)), 60 * 1000)
         return () => clearInterval(t)
-    }, [])
+    }, [city.timeZone])
 
     useEffect(() => {
-        document.title = 'HK Michelin Map · Animesh Harsh'
-        fetch(`${process.env.PUBLIC_URL}/data/michelin-hk.json`)
+        document.title = `${city.title} · Animesh Harsh`
+        setData(null)
+        setSelectedId(null)
+        setFilters(DEFAULT_FILTERS)
+        fetch(`${process.env.PUBLIC_URL}${city.dataUrl}`)
             .then((r) => {
                 if (!r.ok) throw new Error(`HTTP ${r.status}`)
                 return r.json()
@@ -192,7 +202,7 @@ export default function Michelin() {
         return () => {
             document.title = 'Animesh Harsh'
         }
-    }, [])
+    }, [city])
 
     const restaurants = useMemo(() => (data ? data.restaurants : []), [data])
     const byId = useMemo(() => new Map(restaurants.map((r) => [r.id, r])), [restaurants])
@@ -238,13 +248,16 @@ export default function Michelin() {
     }, [])
 
     const locate = () =>
-        locateUser((status) => {
+        locateUser(
+            (status) => {
             setGeoStatus({ state: status.state, message: status.message })
             if (status.loc) {
                 setUserLoc(status.loc)
                 setFlyTarget({ ...status.loc, zoom: status.inHk ? 15 : 11, t: Date.now() })
             }
-        })
+            },
+            { bounds: city.bounds, name: city.place }
+        )
 
     const selected = selectedId ? byId.get(selectedId) : null
     const nFilters = activeFilterCount(filters)
@@ -259,9 +272,9 @@ export default function Michelin() {
                 <Link to="/utilities" className="back-link">
                     ← Utilities
                 </Link>
-                <h1>HK Michelin Map</h1>
+                <h1>{city.title}</h1>
                 <p className="fp-sub">
-                    Every Hong Kong restaurant with MICHELIN stars or a Bib Gourmand in the {data ? data.source.edition.replace('MICHELIN Guide ', '') : '2026'} guide.
+                    Every {city.place} restaurant with MICHELIN stars or a Bib Gourmand in the {(data ? data.source.edition : city.defaultEdition).replace('MICHELIN Guide ', '')} guide.
                     {data && (
                         <span className="mic-counts">
                             {' '}
@@ -327,7 +340,7 @@ export default function Michelin() {
                             </label>
                             <label className="check">
                                 <input type="checkbox" checked={filters.openNow} onChange={setFilter('openNow')} />
-                                Open now <span className="count">(HK time, {now.label})</span>
+                                Open now <span className="count">({city.timeLabel}, {now.label})</span>
                             </label>
                             <label className="select">
                                 Cuisine
@@ -341,7 +354,7 @@ export default function Michelin() {
                                 </select>
                             </label>
                             <label className="select">
-                                District
+                                {city.districtLabel}
                                 <select value={filters.district} onChange={setFilter('district')}>
                                     <option value="">All districts</option>
                                     {(data?.districts || []).map((d) => (
@@ -368,6 +381,7 @@ export default function Michelin() {
                             r={selected}
                             distance={userLoc ? distanceKm(userLoc, selected) : null}
                             now={now}
+                            city={city}
                             onBack={() => setSelectedId(null)}
                         />
                     ) : (
@@ -421,7 +435,7 @@ export default function Michelin() {
 
                     <footer className="fp-footer">
                         <p>
-                            Distinctions are from the {data?.source.edition || 'MICHELIN Guide Hong Kong & Macau 2026'}, compiled from
+                            Distinctions are from the {data?.source.edition || city.defaultEdition}, compiled from
                             published coverage of the announcement. Descriptions are our own; opening hours were gathered from restaurant
                             websites and listings in November 2026. Restaurants close, move and change hours, so check before you go.
                             Map positions are matched from addresses and may be approximate.
@@ -438,7 +452,7 @@ export default function Michelin() {
                 </aside>
 
                 <div className="fp-map" role="region" aria-label="Map of Michelin restaurants">
-                    <MapContainer bounds={HK_BOUNDS} scrollWheelZoom className="fp-leaflet" minZoom={10}>
+                    <MapContainer bounds={city.bounds} scrollWheelZoom className="fp-leaflet" minZoom={10}>
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -451,7 +465,7 @@ export default function Michelin() {
                                 onSelect={select}
                                 focusRequest={focusRequest}
                                 fitKey={fitKey}
-                                defaultBounds={HK_BOUNDS}
+                                defaultBounds={city.bounds}
                                 iconFor={michelinIcon}
                                 titleFor={michelinTitle}
                                 maxClusterRadius={35}

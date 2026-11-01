@@ -23,7 +23,11 @@ function App() {
     />
     <Route
       path="utilities/hk-michelin"
-      element={<Suspense fallback={null}><Michelin /></Suspense>}
+      element={<Suspense fallback={null}><Michelin key="hk" cityKey="hk" /></Suspense>}
+    />
+    <Route
+      path="utilities/tokyo-michelin"
+      element={<Suspense fallback={null}><Michelin key="tokyo" cityKey="tokyo" /></Suspense>}
     />
     <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

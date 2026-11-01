@@ -37,7 +37,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "data:fountains": "node scripts/build-fountains.mjs",
-    "data:michelin": "node scripts/build-michelin.mjs"
+    "data:michelin": "node scripts/build-michelin.mjs",
+    "data:michelin-tokyo": "node scripts/build-michelin.mjs --city tokyo"
   },
   "eslintConfig": {
     "extends": [

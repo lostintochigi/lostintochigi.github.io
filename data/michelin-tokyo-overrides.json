@@ -1,0 +1,19 @@
+{
+  "_help": [
+    "Manual fixes applied by scripts/build-michelin.mjs --city tokyo. Same format as data/michelin-overrides.json.",
+    "Match by restaurant name (case-insensitive); any of lat, lng, address, district, distinction, cuisine, description, hours, hours_note replace the CSV value.",
+    "Setting lat/lng marks the position as manually verified. \"exclude\": true drops the restaurant. Re-run: npm run data:michelin-tokyo"
+  ],
+  "overrides": [
+    {
+      "name": "Kabi",
+      "exclude": true,
+      "note": "Closed in spring 2026 as announced; Tabelog marks it closed."
+    },
+    {
+      "name": "TOKi",
+      "exclude": true,
+      "note": "Closed; last day reported as 26 Sep 2026 and Tabelog marks it closed."
+    }
+  ]
+}

@@ -29,9 +29,19 @@ copy of the CSV for download.
 
 - Fix a row: edit the CSV, or add an entry in `data/michelin-overrides.json` (e.g. `"exclude": true` if a
   restaurant closes, or corrected `lat`/`lng`).
-- New guide edition: save a new CSV with the same columns as `data/michelin_hk_<year>.csv`, then
-  `npm run data:michelin -- --edition <year>` and update the route copy if needed.
+- Each row also has a `description` (our own words) and `hours` in a strict format the build checks, e.g.
+  `Mon-Fri 12:00-14:30, 18:00-22:30; Sat-Sun 11:30-15:00; Tue closed` (times past midnight like `18:00-02:00`).
+  The page uses it for the weekly table, the "Open now" badge and filter (local city time).
+- New guide edition: save a new CSV with the same columns, point the city's `csv`/`edition` at it in
+  `scripts/build-michelin.mjs`, then rebuild.
 - Check `data/michelin-report.md`, then `npm run deploy`.
+
+### Tokyo Michelin Map (`/utilities/tokyo-michelin`)
+
+Same page and build script, Tokyo settings (`src/components/Michelin/cities.js`). Data:
+`data/michelin_tokyo.csv` (MICHELIN Guide Tokyo 2026, coordinates from the GSI geocoder / Tabelog pins, hours
+mostly from Tabelog), fixes in `data/michelin-tokyo-overrides.json`. Rebuild with `npm run data:michelin-tokyo`;
+report in `data/michelin-tokyo-report.md`. The 2027 Tokyo selection is due 16 Feb 2027.
 
 ---
 

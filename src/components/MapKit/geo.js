@@ -30,7 +30,8 @@ export function directionsLinks({ lat, lng, query }) {
 
 // Browser geolocation with friendly error messages.
 // onUpdate receives { state: 'loading'|'ok'|'error', message, loc? }.
-export function locateUser(onUpdate) {
+// area: { bounds: [[s, w], [n, e]], name } — used to warn when the visitor is far away.
+export function locateUser(onUpdate, area = { bounds: HK_BOUNDS, name: 'Hong Kong' }) {
     if (!('geolocation' in navigator)) {
         onUpdate({ state: 'error', message: "Your browser doesn't support location. Search or pick a district instead." })
         return
@@ -43,12 +44,14 @@ export function locateUser(onUpdate) {
     navigator.geolocation.getCurrentPosition(
         (pos) => {
             const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude }
-            const inHk = loc.lat > 22.1 && loc.lat < 22.6 && loc.lng > 113.8 && loc.lng < 114.5
+            const [[s, w], [n, e]] = area.bounds
+            const pad = 0.1
+            const inHk = loc.lat > s - pad && loc.lat < n + pad && loc.lng > w - pad && loc.lng < e + pad
             onUpdate({
                 state: 'ok',
                 loc,
                 inHk,
-                message: inHk ? '' : 'You seem to be outside Hong Kong, so distances will be large.',
+                message: inHk ? '' : `You seem to be outside ${area.name}, so distances will be large.`,
             })
         },
         (err) => {

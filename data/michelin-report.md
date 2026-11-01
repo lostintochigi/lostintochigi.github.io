@@ -1,6 +1,6 @@
 # Michelin data report
 
-Source: `data/michelin_hk_2026.csv` · generated 2026-11-01T12:47:00.031Z
+Source: `data/michelin_hk_2026.csv` · generated 2026-11-01T13:14:45.739Z
 
 - CSV rows: 147
 - On the map: 147
@@ -18,7 +18,7 @@ Source: `data/michelin_hk_2026.csv` · generated 2026-11-01T12:47:00.031Z
 Add lat/lng in the CSV or in data/michelin-overrides.json.
 
 
-## Outside Hong Kong (not on map) (0)
+## Outside the city bounds (not on map) (0)
 
 
 ## Duplicates (skipped) (0)

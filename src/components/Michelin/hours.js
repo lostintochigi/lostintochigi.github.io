@@ -1,9 +1,27 @@
-// Opening-hours helpers for the HK Michelin map.
+// Opening-hours helpers for the Michelin map pages.
 // `week` comes from scripts/build-michelin.mjs: an array indexed by day
 // (0 = Sun … 6 = Sat), each entry null (unknown) or a list of [open, close]
 // spans in minutes since midnight. close > 1440 means it runs past midnight.
 
-import { hkNow } from '../Fountains/logic'
+const WEEKDAYS = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }
+const formatters = new Map()
+
+// Day (0 = Sun) and minutes since midnight in the given time zone,
+// regardless of the visitor's own time zone.
+export function zonedNow(timeZone, date = new Date()) {
+    if (!formatters.has(timeZone)) {
+        formatters.set(
+            timeZone,
+            new Intl.DateTimeFormat('en-GB', { timeZone, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+        )
+    }
+    const parts = Object.fromEntries(formatters.get(timeZone).formatToParts(date).map((p) => [p.type, p.value]))
+    return {
+        day: WEEKDAYS[parts.weekday],
+        minutes: (Number(parts.hour) % 24) * 60 + Number(parts.minute),
+        label: `${parts.weekday} ${parts.hour}:${parts.minute}`,
+    }
+}
 
 export const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const DISPLAY_ORDER = [1, 2, 3, 4, 5, 6, 0]
@@ -17,7 +35,7 @@ const fmtSpans = (spans) =>
     spans && spans.length ? spans.map(([o, c]) => `${fmtTime(o)}–${fmtTime(c)}`).join(', ') : 'Closed'
 
 // { state: 'open' | 'closed' | 'unknown', label }
-export function openStatus(week, now = hkNow()) {
+export function openStatus(week, now) {
     if (!week) return { state: 'unknown', label: 'Hours not listed' }
     const today = week[now.day]
     const yesterday = week[(now.day + 6) % 7]

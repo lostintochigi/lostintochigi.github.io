@@ -37,6 +37,14 @@ const utilities = [
         tags: ['hong kong', 'map', 'food'],
         date: '2026-11',
     },
+    {
+        name: 'Tokyo Michelin Map',
+        description:
+            "Every Tokyo restaurant with MICHELIN stars or a Bib Gourmand, with descriptions and opening hours. Filter by stars, cuisine, ward and open now, or find what's near you.",
+        url: '/utilities/tokyo-michelin',
+        tags: ['tokyo', 'map', 'food'],
+        date: '2026-11',
+    },
 ]
 
 export default utilities
