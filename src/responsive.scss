@@ -1,0 +1,150 @@
+// Site-wide layout fixes. Imported last in App.js so it wins over page styles.
+
+// ---------- Desktop: let tall text scroll instead of being clipped ----------
+.about-page .text-zone,
+.contact-page .text-zone {
+    overflow-y: auto;
+    max-height: 90%;
+    padding-right: 12px;
+}
+
+.contact-page .socials ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    a { text-decoration: none; }
+    .flat-button { float: none; margin: 0; cursor: pointer; }
+}
+
+// ---------- Phones & small tablets ----------
+@media (max-width: 800px) {
+    body { overflow-y: auto; }
+
+    // Sidebar becomes a fixed top bar.
+    .nav-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 56px;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 8px;
+        box-sizing: border-box;
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0;
+
+            img { margin: 0 4px; }
+            .sub-logo { display: none; }
+        }
+
+        nav {
+            position: static;
+            display: flex;
+            height: auto;
+            width: auto;
+            margin: 0;
+
+            a {
+                width: 46px;
+                line-height: 56px;
+                font-size: 20px;
+
+                // Hover labels stick on touch screens; icons are enough here.
+                &::after { display: none; }
+                &:hover svg { opacity: 1; }
+            }
+        }
+
+        ul {
+            position: static;
+            display: flex;
+            width: auto;
+
+            li a { padding: 10px 8px; font-size: 18px; }
+        }
+    }
+
+    // Pages flow normally and scroll.
+    .page {
+        position: relative;
+        height: auto;
+        min-height: 100vh;
+        padding-top: 56px;
+        box-sizing: border-box;
+    }
+
+    .tags { display: none; }
+
+    .container {
+        position: relative;
+        top: 0;
+        height: auto;
+        min-height: 0;
+        padding: 36px 18px 48px;
+        box-sizing: border-box;
+    }
+
+    .home-page .text-zone,
+    .about-page .text-zone,
+    .contact-page .text-zone,
+    .utilities-page .text-zone {
+        position: static;
+        transform: none;
+        width: 100%;
+        max-height: none;
+        overflow: visible;
+        padding: 0;
+    }
+
+    .home-page h1 {
+        font-size: 36px;
+        &::before, &::after { display: none; }
+    }
+
+    .about-page h1,
+    .contact-page h1,
+    .utilities-page h1 {
+        font-size: 40px;
+    }
+
+    .home-page .button-container { flex-wrap: wrap; }
+
+    .logo-container,
+    .stage-cube-cont { display: none; }
+
+    .intro-para1,
+    .intro-para2,
+    .intro-para3,
+    .contact-paragraph,
+    .contact-form .form-heading {
+        font-size: 18px;
+    }
+
+    .about-page .flat-button { float: none; display: inline-block; }
+
+    .contact-page {
+        .info-map {
+            position: static;
+            width: auto;
+            margin-top: 28px;
+        }
+
+        .map-wrap {
+            float: none;
+            width: 100%;
+            height: 300px;
+        }
+    }
+
+    .loader-active { position: fixed; }
+}
