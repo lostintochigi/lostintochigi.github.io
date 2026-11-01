@@ -1,6 +1,6 @@
 # Michelin data report
 
-Source: `data/michelin_hk_2026.csv` · generated 2026-11-01T03:59:58.543Z
+Source: `data/michelin_hk_2026.csv` · generated 2026-11-01T12:47:00.031Z
 
 - CSV rows: 147
 - On the map: 147
@@ -28,6 +28,19 @@ Add lat/lng in the CSV or in data/michelin-overrides.json.
 
 Shown with a warning; Directions use the address.
 
+
+## Opening hours that need fixing (1)
+
+Fix the hours column (format: "Mon-Fri 12:00-14:30, 18:00-22:30; Sun closed").
+
+- Yat Lok (Central) (1 Star, CSV line 74) — some days not covered (shown as unknown)
+
+## No opening hours (4)
+
+- L'Atelier de Joël Robuchon (2 Stars, CSV line 12)
+- Whey (1 Star, CSV line 71)
+- Heartwarming (Prince Edward) (Bib Gourmand, CSV line 85)
+- Sang Kee Foods (Western District) (Bib Gourmand, CSV line 107)
 
 ## Low-confidence coordinates (shown as approximate) (8)
 

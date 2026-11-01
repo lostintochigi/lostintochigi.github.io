@@ -38,5 +38,23 @@
         dd { margin: 0; overflow-wrap: anywhere; }
     }
 
+    .mic-desc { margin: 10px 0 0; font-size: 15px; line-height: 1.5; }
+    .mic-muted { margin: 6px 0 0; font-size: 13px; color: #b9c9bb; }
+    .mic-muted a { color: inherit; }
+
+    .mic-hours {
+        margin: 16px 0 0;
+
+        h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 6px; font-size: 15px; text-transform: none; letter-spacing: normal; color: #fff; }
+        h3 .badge { text-transform: none; letter-spacing: normal; font-size: 13px; }
+        .badge { font-weight: 600; }
+        table { border-collapse: collapse; font-size: 14px; }
+        th { text-align: left; font-weight: 400; color: #b9c9bb; padding: 2px 14px 2px 0; white-space: nowrap; vertical-align: top; }
+        td { padding: 2px 0; }
+        tr.is-today th, tr.is-today td { color: #fff; font-weight: 700; }
+    }
+
+    .row-status { &.is-open { color: #8ef0a0; } &.is-closed { color: #ffb4a8; } }
+
     .mic-search { margin: 14px 0 0; font-size: 14px; }
 }

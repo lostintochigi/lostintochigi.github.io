@@ -63,6 +63,42 @@ function km(a, b) {
     const h = Math.sin(rad(b.lat - a.lat) / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(rad(b.lng - a.lng) / 2) ** 2
     return 2 * 6371 * Math.asin(Math.sqrt(h))
 }
+// Opening hours, e.g. "Mon-Fri 12:00-14:30, 18:00-22:30; Sat-Sun 11:30-15:00; Tue closed".
+// Returns [Sun..Sat] of null (unknown) or [[openMin, closeMin], ...]; throws on bad input.
+const DAY_INDEX = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }
+function parseHours(text) {
+    if (!text) return null
+    const week = Array(7).fill(null)
+    for (const seg of text.split(';').map((s) => s.trim()).filter(Boolean)) {
+        const m = seg.match(/^([A-Za-z&-]+)\s+(.+)$/)
+        if (!m) throw new Error(`can't read segment "${seg}"`)
+        const days = []
+        for (const part of m[1].split('&')) {
+            const [a, b] = part.split('-')
+            if (!(a in DAY_INDEX) || (b && !(b in DAY_INDEX))) throw new Error(`unknown day in "${part}"`)
+            if (!b) days.push(DAY_INDEX[a])
+            else for (let d = DAY_INDEX[a]; ; d = (d + 1) % 7) { days.push(d); if (d === DAY_INDEX[b]) break }
+        }
+        let spans = []
+        if (!/^closed$/i.test(m[2].trim())) {
+            spans = m[2].split(',').map((t) => {
+                const x = t.trim().match(/^(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})$/)
+                if (!x) throw new Error(`can't read time "${t.trim()}"`)
+                const open = +x[1] * 60 + +x[2]
+                let close = +x[3] * 60 + +x[4]
+                if (open >= 1440 || close > 1440) throw new Error(`bad time "${t.trim()}"`)
+                if (close <= open) close += 1440 // past midnight
+                return [open, close]
+            })
+        }
+        for (const d of days) {
+            if (week[d] !== null) throw new Error(`${Object.keys(DAY_INDEX)[d]} listed twice`)
+            week[d] = spans
+        }
+    }
+    return week
+}
+
 const median = (xs) => {
     const s = [...xs].sort((a, b) => a - b)
     const m = Math.floor(s.length / 2)
@@ -78,7 +114,7 @@ function main() {
     }
     const overrides = fs.existsSync(OVERRIDES_PATH) ? JSON.parse(fs.readFileSync(OVERRIDES_PATH, 'utf8')).overrides || [] : []
 
-    const report = { invalid: [], noCoords: [], outOfBounds: [], duplicates: [], flagged: [], lowConfidence: [], overridden: [] }
+    const report = { badHours: [], noHours: [], invalid: [], noCoords: [], outOfBounds: [], duplicates: [], flagged: [], lowConfidence: [], overridden: [] }
     const rows = []
     const seen = new Map()
 
@@ -90,7 +126,7 @@ function main() {
         const o = overrides.find((x) => clean(x.name).toLowerCase() === r.name.toLowerCase())
         if (o) {
             if (o.exclude) { report.overridden.push({ r, note: `excluded${o.note ? `: ${o.note}` : ''}` }); return }
-            for (const k of ['lat', 'lng', 'address', 'district', 'distinction', 'cuisine']) {
+            for (const k of ['lat', 'lng', 'address', 'district', 'distinction', 'cuisine', 'description', 'hours', 'hours_note']) {
                 if (o[k] !== undefined && o[k] !== null && o[k] !== '') r[k] = String(o[k])
             }
             if (o.lat != null) { r.coord_confidence = 'high'; r.coord_source = 'manual' }
@@ -115,6 +151,14 @@ function main() {
         }
         r.lat = lat
         r.lng = lng
+        try {
+            r.week = parseHours(r.hours)
+        } catch (e) {
+            report.badHours.push({ r, note: `${e.message} (in "${r.hours}")` })
+            r.week = null
+        }
+        if (!r.week) report.noHours.push({ r })
+        else if (r.week.some((d) => d === null)) report.badHours.push({ r, note: 'some days not covered (shown as unknown)' })
         if (/^(low|none)$/i.test(r.coord_confidence || '')) report.lowConfidence.push({ r })
         rows.push(r)
     })
@@ -159,6 +203,11 @@ function main() {
             lng: Number(r.lng.toFixed(6)),
             approximate: /^low$/i.test(r.coord_confidence || '') || null,
             flagged: r.flagged || null,
+            description: r.description || null,
+            week: r.week,
+            hoursNote: r.hours_note || null,
+            hoursSource: r.hours_source || null,
+            hoursUnsure: /^low$/i.test(r.hours_confidence || '') || null,
         }))
 
     const cuisines = [...new Set(restaurants.map((r) => r.cuisine))].sort((a, b) => a.localeCompare(b))
@@ -195,6 +244,8 @@ function main() {
     section('Outside Hong Kong (not on map)', report.outOfBounds)
     section('Duplicates (skipped)', report.duplicates)
     section('Flagged: position looks wrong for the district', report.flagged, 'Shown with a warning; Directions use the address.')
+    section('Opening hours that need fixing', report.badHours, 'Fix the hours column (format: "Mon-Fri 12:00-14:30, 18:00-22:30; Sun closed").')
+    section('No opening hours', report.noHours)
     section('Low-confidence coordinates (shown as approximate)', report.lowConfidence)
     section('Overrides applied', report.overridden)
     fs.writeFileSync(REPORT_PATH, L.join('\n'))

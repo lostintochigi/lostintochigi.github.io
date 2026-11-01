@@ -1,7 +1,8 @@
 {
   "_help": [
     "Manual fixes applied by scripts/build-michelin.mjs. This file is never written by the script.",
-    "Match by restaurant name (case-insensitive). Any of lat, lng, address, district, distinction, cuisine",
+    "Match by restaurant name (case-insensitive). Any of lat, lng, address, district, distinction, cuisine,",
+    "description, hours, hours_note replace the CSV value.",
     "replace the CSV value. Setting lat/lng marks the position as manually verified (skips the district check).",
     "\"exclude\": true drops the restaurant (e.g. it has closed). Re-run: npm run data:michelin"
   ],
