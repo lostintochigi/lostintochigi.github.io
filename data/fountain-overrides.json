@@ -1,0 +1,31 @@
+{
+  "_help": [
+    "Manual fixes applied by scripts/build-fountains.mjs. This file is never written by the script.",
+    "Each override matches a CSV row by venue name + the lat/lng exactly as listed in the CSV",
+    "(add \"location\" inside match to target a single dispenser).",
+    "Set \"lat\"/\"lng\" to correct the position, \"exclude\": true to drop the row,",
+    "or \"access\" (public | users_only | hirers_only | restricted) to override access.",
+    "Entries with lat/lng null do nothing; they are placeholders for rows the script flagged.",
+    "Re-run: npm run data:fountains"
+  ],
+  "overrides": [
+    {
+      "match": { "name": "Ma On Shan Recreation Ground", "lat": 22.251, "lng": 114.1341 },
+      "lat": null,
+      "lng": null,
+      "note": "Listed on Hong Kong Island; address is No.1 Hang Hong Street, Ma On Shan"
+    },
+    {
+      "match": { "name": "Ma On Shan Sports Centre", "lat": 22.2534, "lng": 114.1346 },
+      "lat": null,
+      "lng": null,
+      "note": "Listed on Hong Kong Island; address is 14 On Chun Street, Ma On Shan"
+    },
+    {
+      "match": { "name": "University Station Cycling Entry/Exit Hub", "lat": 22.497246, "lng": 114.121383 },
+      "lat": null,
+      "lng": null,
+      "note": "Listed near Sheung Shui; address is Chak Cheung Street, University Station, Sha Tin"
+    }
+  ]
+}

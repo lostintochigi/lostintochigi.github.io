@@ -1,6 +1,7 @@
 import './index.scss'
 import { useEffect, useState } from 'react'
 import Loader from 'react-loaders'
+import { Link } from 'react-router-dom'
 import AnimatedLetters from '../AnimatedLetters'
 import utilities from '../../data/utilities'
 
@@ -31,14 +32,15 @@ const Utilities = () => {
                     <p className="utilities-empty">Nothing here yet — check back soon.</p>
                 ) : (
                     <ul className="utilities-grid">
-                        {utilities.map((u) => (
+                        {utilities.map((u) => {
+                            // Pages inside this app open in the same tab; everything else in a new one.
+                            const Card = u.url.startsWith('/utilities/') ? Link : 'a'
+                            const linkProps = Card === Link
+                                ? { to: u.url }
+                                : { href: u.url, target: '_blank', rel: 'noreferrer' }
+                            return (
                             <li key={u.url}>
-                                <a
-                                    className="utility-card"
-                                    href={u.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
+                                <Card className="utility-card" {...linkProps}>
                                     <span className="utility-name">{u.name}</span>
                                     {u.date && <span className="utility-date">{u.date}</span>}
                                     <span className="utility-desc">{u.description}</span>
@@ -49,9 +51,10 @@ const Utilities = () => {
                                             ))}
                                         </span>
                                     )}
-                                </a>
+                                </Card>
                             </li>
-                        ))}
+                            )
+                        })}
                     </ul>
                 )}
             </div>

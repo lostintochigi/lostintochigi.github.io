@@ -1,3 +1,27 @@
+# animeshharsh.com
+
+Personal site (Create React App), deployed to GitHub Pages with `npm run deploy`.
+
+## Utilities
+
+Listed on `/utilities` from `src/data/utilities.js`. See that file for how to add one.
+
+### HK Water Fountains (`/utilities/hk-water-fountains`)
+
+Map of LCSD drinking fountains. The page loads `public/data/fountains.json`, which is generated from
+the LCSD CSV by `scripts/build-fountains.mjs`.
+
+To update the data:
+
+1. Download the English CSV from DATA.GOV.HK
+   (https://data.gov.hk/en-data/dataset/hk-lcsd-facwd-fac-wd-list) and save it as `data/lcsd_wd_en.csv`.
+2. `npm run data:fountains -- --source-date YYYY-MM-DD` (the date shown on the page as "Data as of").
+3. Read `data/fountains-report.md` for excluded and flagged rows. Fix positions in
+   `data/fountain-overrides.json`, then re-run step 2.
+4. `npm run deploy`.
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

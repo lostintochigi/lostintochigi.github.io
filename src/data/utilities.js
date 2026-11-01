@@ -4,6 +4,7 @@
 //   name        – card title
 //   description – one or two sentences on what it does
 //   url         – where it lives. Either:
+//                   • a React page in this app: '/utilities/<slug>' (opens in the same tab)
 //                   • a self-hosted tool: put it in public/tools/<slug>/index.html
 //                     and use '/tools/<slug>/'
 //                   • any external link (GitHub repo, Vercel app, etc.)
@@ -20,6 +21,14 @@
 //   },
 
 const utilities = [
+    {
+        name: 'HK Water Fountains',
+        description:
+            'Map of 1,000+ drinking fountains in Hong Kong parks, pools, beaches and sports centres. Filter by open now, cold water and district, or find the nearest one.',
+        url: '/utilities/hk-water-fountains',
+        tags: ['hong kong', 'map', 'open data'],
+        date: '2026-11',
+    },
 ]
 
 export default utilities

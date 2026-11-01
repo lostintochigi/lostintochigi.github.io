@@ -7,11 +7,19 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Utilities from './components/Utilities';
 import './responsive.scss';
+import { lazy, Suspense } from 'react';
+
+// Full-screen utilities load on demand and render outside the sidebar layout.
+const Fountains = lazy(() => import('./components/Fountains'));
 
 function App() {
   return (
     <>
     <Routes>
+    <Route
+      path="utilities/hk-water-fountains"
+      element={<Suspense fallback={null}><Fountains /></Suspense>}
+    />
     <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="portfolio-website" element={<Home />} />
