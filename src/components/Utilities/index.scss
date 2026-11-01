@@ -1,0 +1,143 @@
+.utilities-page {
+    .text-zone {
+        position: absolute;
+        left: 10%;
+        right: 8%;
+        top: 8%;
+        bottom: 4%;
+        overflow-y: auto;
+        padding: 30px 10px 20px 10px;
+
+        @media (max-width: 700px) {
+            left: 76px; // clear the 60px sidebar
+            right: 12px;
+            padding: 30px 4px 20px 4px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        h1 { font-size: 40px; }
+        .utilities-intro { font-size: 17px; }
+    }
+
+    h1 {
+        font-size: 53px;
+        font-family: 'Coolvetica';
+        color: #ffd700;
+        font-weight: 400;
+        margin-top: 0;
+        position: relative;
+        margin-bottom: 30px;
+        left: 10px;
+
+        &::before {
+            content: '<h1>';
+            font-family: 'La Belle Aurore';
+            font-size: 18px;
+            position: absolute;
+            margin-top: -10px;
+            left: -10px;
+            opacity: 0.6;
+            line-height: 18px;
+        }
+
+        &::after {
+            content: '<h1/>';
+            font-family: 'La Belle Aurore';
+            font-size: 18px;
+            line-height: 18px;
+            position: absolute;
+            left: -30px;
+            bottom: -20px;
+            margin-left: 20px;
+            opacity: 0.6;
+        }
+    }
+
+    .utilities-intro,
+    .utilities-empty {
+        color: #fff;
+        font-family: sans-serif;
+        font-weight: 300;
+        font-size: 22px;
+        margin: 0 0 30px 0;
+    }
+
+    .utilities-empty {
+        opacity: 0.6;
+        font-size: 18px;
+    }
+
+    // Override the sidebar's global `ul` positioning.
+    .utilities-grid {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+        gap: 20px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        text-align: left;
+        animation: fadeInUp 1s 1.5s backwards;
+    }
+
+    .utility-card {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 20px;
+        border: 2px solid #ffd700;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #fff;
+        font-family: sans-serif;
+        transition: all 0.3s ease-out;
+
+        &:hover {
+            background: #ffd700;
+            color: #333;
+
+            .utility-tag {
+                border-color: #333;
+                color: #333;
+            }
+        }
+    }
+
+    .utility-name {
+        font-family: 'Coolvetica';
+        font-size: 24px;
+        letter-spacing: 1px;
+    }
+
+    .utility-date {
+        font-size: 12px;
+        letter-spacing: 2px;
+        opacity: 0.7;
+    }
+
+    .utility-desc {
+        font-size: 15px;
+        font-weight: 300;
+        line-height: 1.4;
+        flex: 1;
+    }
+
+    .utility-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .utility-tag {
+        font-size: 11px;
+        letter-spacing: 1px;
+        padding: 2px 8px;
+        border: 1px solid #ffd700;
+        border-radius: 10px;
+        color: #ffd700;
+        transition: all 0.3s ease-out;
+    }
+}
