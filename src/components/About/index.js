@@ -28,10 +28,10 @@ const About = () => {
                 />
             </h1>
             <p className="intro-para1">
-            Hi there! I'm Animesh Harsh, a Computer Science junior based in Tokyo. <br/><br/>
+            Hi there! I'm Animesh Harsh, an AI graduate student researcher at the University of Tokyo (Matsuo-Iwasawa Lab), based in Tokyo. <br/><br/>
             </p>
             <p className="intro-para2">
-            Originally from India, I embarked on my journey to Japan for my Undergraduate education back in 2019. <br/><br/>
+            Originally from India, I came to Japan in 2019 as a MEXT scholar and earned my B.S. in Computer Science from Chiba Institute of Technology in 2025. I'm now working on web agent development with the UT LLM Team. <br/><br/>
             </p>
             <p className="intro-para3">
             My interests lie in Image Processing, App Development, Linux Server Management, Unity and Bash Scripting. I thrive on leveraging technology to simplify my life.
@@ -40,7 +40,7 @@ const About = () => {
             Link to resume:- <br/>
             <a target="_blank"
                 rel="noreferrer"
-                href="https://github.com/lostintochigi/resume/blob/main/AnimeshHarsh_CV.pdf"
+                href="/Animesh_Harsh_Resume.pdf"
                 className="flat-button">
             <strong>Download resume</strong> </a>
             </p>

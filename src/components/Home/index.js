@@ -10,7 +10,7 @@ const Home = () => {
     const [letterClass, setLetterClass] = useState('text-animate')
     
     const nameArray = "nimesh"
-    const jobArray = "3rd year Computer Science Undergrad"
+    const jobArray = "AI Graduate Student @ UTokyo"
     
     
     useEffect(() => {
@@ -42,13 +42,13 @@ const Home = () => {
             strArray={jobArray.split("")}
             idx={-12+jobArray.length} />
             </h1>
-            <h2> Image Processing/ Frontend/ Python Scirpting</h2>
+            <h2> Web Agents / LLMs / Python</h2>
             <div className="button-container">
             <Link to="/contact" className='flat-button'>CONTACT</Link>
             <a 
                 target="_blank"
                 rel="noreferrer"
-                href="https://github.com/lostintochigi/resume/blob/main/AnimeshHarsh_CV.pdf"
+                href="/Animesh_Harsh_Resume.pdf"
                 className="flat-button"
             >
                 <strong>Download resume</strong> 

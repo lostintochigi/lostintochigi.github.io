@@ -67,7 +67,7 @@ const Contact = () => {
             <li>
             <a target="_blank"
                 rel="noreferrer"
-                href="mailto:animes.rishu@gmail.com?subject=Contact via Animesh's website&amp;"
+                href="mailto:animesh.rishu@gmail.com?subject=Contact via Animesh's website&amp;"
                 className="flat-button">
             <strong>E-Mail</strong>
 </a>
@@ -116,7 +116,7 @@ const Contact = () => {
                 <br />
                 大田区 <br />
                 Somewhere < br/>
-                <span>animes.rishu@gmail.com</span>
+                <span>animesh.rishu@gmail.com</span>
             </div>
             <div className='map-wrap'>
                 <MapContainer center={[35.6586, 139.7454]} zoom={13}>
