@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MapContainer, TileLayer, CircleMarker, useMap } from 'react-leaflet'
 import ClusterLayer from './ClusterLayer'
+import LocateControl from './LocateControl'
 import {
     ACCESS_LABELS,
     directionsLinks,
@@ -503,6 +504,7 @@ export default function Fountains() {
                             />
                         )}
                         <FlyTo target={flyTarget} />
+                        <LocateControl onLocate={locate} busy={geoStatus.state === 'loading'} />
                     </MapContainer>
                     <div className="map-legend" aria-hidden="true">
                         <span>
