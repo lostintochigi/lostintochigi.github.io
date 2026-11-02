@@ -1,6 +1,6 @@
 # Michelin data report
 
-Source: `data/michelin_hk_2026.csv` · generated 2026-11-01T13:14:45.739Z
+Source: `data/michelin_hk_2026.csv` · generated 2026-11-02T02:30:11.698Z
 
 - CSV rows: 147
 - On the map: 147

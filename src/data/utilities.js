@@ -45,6 +45,14 @@ const utilities = [
         tags: ['tokyo', 'map', 'food'],
         date: '2026-11',
     },
+    {
+        name: 'TRY Ramen Map',
+        description:
+            'Award-winning ramen shops from the TRY Ramen Awards (Tokyo Ramen of the Year), several editions on one map. Filter by edition, category, style and open now.',
+        url: '/utilities/tokyo-ramen',
+        tags: ['tokyo', 'map', 'ramen'],
+        date: '2026-11',
+    },
 ]
 
 export default utilities

@@ -12,6 +12,7 @@ import { lazy, Suspense } from 'react';
 // Full-screen utilities load on demand and render outside the sidebar layout.
 const Fountains = lazy(() => import('./components/Fountains'));
 const Michelin = lazy(() => import('./components/Michelin'));
+const Ramen = lazy(() => import('./components/Ramen'));
 
 function App() {
   return (
@@ -28,6 +29,10 @@ function App() {
     <Route
       path="utilities/tokyo-michelin"
       element={<Suspense fallback={null}><Michelin key="tokyo" cityKey="tokyo" /></Suspense>}
+    />
+    <Route
+      path="utilities/tokyo-ramen"
+      element={<Suspense fallback={null}><Ramen /></Suspense>}
     />
     <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

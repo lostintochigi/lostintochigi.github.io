@@ -1,0 +1,12 @@
+{
+  "_help": [
+    "Manual fixes applied by scripts/build-ramen.mjs. Never written by the script.",
+    "Match by shop name or Japanese name (case-insensitive). Any of name, name_ja, style, address, address_ja, prefecture, district, lat, lng, description, hours, hours_note replace the CSV value.",
+    "\"exclude\": true drops the shop. Re-run: npm run data:ramen",
+    "\"editionNotes\" maps an edition to a note shown on the page (e.g. when only part of its results is public)."
+  ],
+  "overrides": [],
+  "editionNotes": {
+    "2026-2027": "Partial list. The full 2026-2027 rankings are only in the printed book so far; this map has the publicly announced winners plus new-shop ranks transcribed by fans. More will be added when the results are published online."
+  }
+}

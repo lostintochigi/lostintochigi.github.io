@@ -1,0 +1,64 @@
+// Ramen-specific bits on top of MapKit/mapPage.scss and Michelin/index.scss.
+.ramen-page {
+    .ramen-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        min-width: 30px;
+        height: 22px;
+        padding: 0 5px;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+        background: #8d5524;
+        border-radius: 11px;
+
+        &.is-top { background: #c62828; }
+        &.is-gp { color: #1b1b1b; background: #ffd700; border-radius: 5px; }
+    }
+
+    .ramen-edition {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 10px;
+        font-size: 13px;
+        color: #b9c9bb;
+
+        select {
+            min-height: 44px;
+            padding: 8px 10px;
+            font: inherit;
+            font-size: 16px;
+            color: #f2f5f2;
+            background: #052409;
+            border: 1px solid #24502b;
+            border-radius: 6px;
+        }
+    }
+    .ramen-edition-note { margin: 12px 0 0; }
+
+    .ramen-awards {
+        list-style: none;
+        margin: 10px 0 0;
+        padding: 0;
+        display: grid;
+        gap: 6px;
+        font-size: 14px;
+
+        li { display: flex; gap: 10px; align-items: baseline; }
+    }
+    .ramen-award-rank {
+        flex-shrink: 0;
+        min-width: 30px;
+        font-weight: 700;
+        color: #ffb4a8;
+        &.is-first { color: #ffd700; }
+    }
+    .ramen-award-meta { display: block; font-size: 12px; color: #b9c9bb; }
+    .mic-muted-inline { font-size: 13px; color: #b9c9bb; }
+}
+
+.map-marker.is-closed { opacity: 0.55; }

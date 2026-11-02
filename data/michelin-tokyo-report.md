@@ -1,6 +1,6 @@
 # Michelin data report
 
-Source: `data/michelin_tokyo.csv` · generated 2026-11-01T13:14:45.840Z
+Source: `data/michelin_tokyo.csv` · generated 2026-11-02T02:30:11.865Z
 
 - CSV rows: 274
 - On the map: 272

@@ -43,6 +43,14 @@ Same page and build script, Tokyo settings (`src/components/Michelin/cities.js`)
 mostly from Tabelog), fixes in `data/michelin-tokyo-overrides.json`. Rebuild with `npm run data:michelin-tokyo`;
 report in `data/michelin-tokyo-report.md`. The 2027 Tokyo selection is due 16 Feb 2027.
 
+### TRY Ramen Map (`/utilities/tokyo-ramen`)
+
+Shops from the TRY Ramen Awards (Tokyo Ramen of the Year), editions 2024-2025, 2025-2026 and 2026-2027 (partial).
+`data/try_ramen.csv` has one row per award (edition, category, rank) plus the shop's details; the build groups
+rows into shops (by Japanese name) and writes `public/data/try-ramen.json`. Rebuild with `npm run data:ramen`;
+report in `data/try-ramen-report.md`. Fixes and per-edition notes (e.g. "partial") go in
+`data/try-ramen-overrides.json`. Note: tokyoramenoftheyear.com's robots.txt disallows AI crawlers.
+
 ---
 
 # Getting Started with Create React App
